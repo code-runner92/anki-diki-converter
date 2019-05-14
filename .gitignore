@@ -1,2 +1,6 @@
 # node modules
 node_modules/
+
+# style
+style/
+!style/style.sass
