@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const request = require('request');
 const cheerio = require('cheerio');
+let $ = null;
 
 let mainWindow;
 
@@ -23,11 +24,16 @@ ipcMain.on('convert', (e, input) => {
 
   const words = processInput(input);
 
-  request('https://www.diki.pl/test', function (error, response, html) {
+  request(`https://www.diki.pl/${words[0]}`, function (error, response, html) {
+
     if (!error && response.statusCode == 200) {
-      const $ = cheerio.load(html),
-      title = $('.dictionaryEntity .hws h1 span.hw').text();
-      console.log(title);
+      $ = cheerio.load(html);
+      const entity = $('.dictionaryEntity').first();
+
+      const entry = getEntry(entity);
+
+      e.sender.send('convert', entry)
+
     }
   });
 
@@ -38,6 +44,30 @@ const processInput = (input) => {
   input = (input.replace(/\W+/g, ' ')).replace(/\s+/g, ' ');
   const words = input.split(' ').filter(word => word !== '');
   return words;
+}
+
+// get entry
+const getEntry = (entity) => {
+  const hws = $(entity).find('.hws');
+  let entries = [];
+
+  hws.find('.hw').each((i, el) => {
+    const singleEntry = $(el).text(),
+    pronunciationImageSrc = $(el).next('.recordingsAndTranscriptions').find('.phoneticTranscription a img').attr('src'),
+    languageVarietyRaw = $(el).nextAll('.dictionaryEntryHeaderAdditionalInformation').first().find('.languageVariety').text();
+
+    const pronunciationImage = pronunciationImageSrc ? `<a><img src="${pronunciationImageSrc}" style="max-height: 18px; height: auto;"/></a>` : '';
+    if (languageVarietyRaw) {
+      languageVariety = languageVarietyRaw[0] === 'A' ? 'AE' : 'BE';
+    } else {
+      languageVariety = '';
+    }    
+
+    entries.push(`${singleEntry}${pronunciationImage}${languageVariety}`);
+  })
+
+  const entry = `<p>${entries.join(', ')}</p>`;
+  return entry;
 }
 // END OF CONVERT
 
