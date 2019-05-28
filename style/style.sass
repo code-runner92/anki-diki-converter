@@ -1,5 +1,22 @@
+@keyframes spin
+	100%
+		transform: rotate(360deg)
+
 .convert__button
 	width: 100%
+	.text
+		display: block
+	.spinner
+		display: none
+		img
+			height: 20px
+			color: #fff
+			animation: spin 1.5s linear infinite
+	&.loading
+		.text
+			display: none
+		.spinner
+			display: block
 
 .card
 	border: 2px solid #000
