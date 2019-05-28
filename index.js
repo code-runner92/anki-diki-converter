@@ -54,7 +54,7 @@ const getEntry = (entity) => {
   hws.find('.hw').each((i, el) => {
     const singleEntry = $(el).text(),
     pronunciationImageSrc = $(el).next('.recordingsAndTranscriptions').find('.phoneticTranscription a img').attr('src'),
-    additionalInfoRaw = $(el).nextAll('.dictionaryEntryHeaderAdditionalInformation').first().find('a').text();
+    additionalInfoRaw = $(el).nextAll('.dictionaryEntryHeaderAdditionalInformation').first().find('a:not(.starsForNumOccurrences)').text();
 
     const pronunciationImage = pronunciationImageSrc ? ` <a><img src="${pronunciationImageSrc}" style="max-height: 18px; height: auto;"/></a>` : '';
     let additionalInfo = '';
