@@ -54,16 +54,20 @@ const getEntry = (entity) => {
   hws.find('.hw').each((i, el) => {
     const singleEntry = $(el).text(),
     pronunciationImageSrc = $(el).next('.recordingsAndTranscriptions').find('.phoneticTranscription a img').attr('src'),
-    languageVarietyRaw = $(el).nextAll('.dictionaryEntryHeaderAdditionalInformation').first().find('.languageVariety').text();
+    additionalInfoRaw = $(el).nextAll('.dictionaryEntryHeaderAdditionalInformation').first().find('a').text();
 
-    const pronunciationImage = pronunciationImageSrc ? `<a><img src="${pronunciationImageSrc}" style="max-height: 18px; height: auto;"/></a>` : '';
-    if (languageVarietyRaw) {
-      languageVariety = languageVarietyRaw[0] === 'A' ? 'AE' : 'BE';
-    } else {
-      languageVariety = '';
-    }    
+    const pronunciationImage = pronunciationImageSrc ? ` <a><img src="${pronunciationImageSrc}" style="max-height: 18px; height: auto;"/></a>` : '';
+    let additionalInfo = '';
 
-    entries.push(`${singleEntry}${pronunciationImage}${languageVariety}`);
+    if (additionalInfoRaw) {
+      if (additionalInfoRaw.includes('British') || additionalInfoRaw.includes('American')) {
+        additionalInfo = additionalInfoRaw[0] === 'A' ? ' AE' : ' BE';
+      } else {
+        additionalInfo = ' ' + additionalInfoRaw.toUpperCase();
+      }
+    }
+
+    entries.push(`${singleEntry}${pronunciationImage}${additionalInfo}`);
   })
 
   const entry = `<p>${entries.join(', ')}</p>`;
