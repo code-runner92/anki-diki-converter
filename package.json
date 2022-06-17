@@ -11,7 +11,7 @@
     "prestart": "gulp css"
   },
   "devDependencies": {
-    "electron": "^5.0.1",
+    "electron": "^15.5.5",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^6.1.0",
     "gulp-clean-css": "^4.2.0",
